@@ -16,7 +16,7 @@ interface PlantProps extends RectButtonProps{
         photo: string;
     }
 }
-export const PlantCartPrimary = ({data, ...rest}: PlantProps) =>{
+export const PlantCardPrimary = ({data, ...rest}: PlantProps) =>{
     return(
         <RectButton
             style={styles.container}
