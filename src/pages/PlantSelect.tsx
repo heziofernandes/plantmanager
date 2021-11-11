@@ -8,7 +8,7 @@ import {
 } from 'react-native';
 
 import { EnvironmentButton } from '../components/EnvironmentButton';
-import { PlantCartPrimary } from '../components/PlantCardPrimary';
+import { PlantCardPrimary } from '../components/PlantCardPrimary';
 import {Header} from '../components/Header';
 import {Load} from '../components/Load';
 import { useNavigation } from '@react-navigation/core';
@@ -60,7 +60,6 @@ export function PlantSelect(){
 
     function handlePlantSelect(plant: PlantProps){
         navigation.navigate('PlantSave',{plant});
-
     }
 
     useEffect(() =>{
@@ -108,6 +107,7 @@ export function PlantSelect(){
 
     if(loading)
     return<Load />
+    
     return(
             <View style={styles.container}>
                 <View style={styles.header}>
@@ -141,7 +141,7 @@ export function PlantSelect(){
                     data={filteredPlants}
                     keyExtractor={(item)=> String(item.id)}
                     renderItem={({item})=>(
-                        <PlantCartPrimary 
+                        <PlantCardPrimary
                             data={item}
                             onPress={()=> handlePlantSelect(item)}
                         />

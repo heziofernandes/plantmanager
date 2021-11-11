@@ -1,5 +1,6 @@
 import { format } from 'date-fns';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as Notifications from '@expo-notificarions';
 
 
 export interface PlantProps {
@@ -12,11 +13,12 @@ export interface PlantProps {
     frequency: {
         times: number,
         repeat_every: string
-    },
+    };
+    hour: string;
     dateTimeNotification: Date;
 }
 
-interface StoragePlantProps {
+export interface StoragePlantProps {
     [id: string]: {
         data: PlantProps;
     }
@@ -24,6 +26,36 @@ interface StoragePlantProps {
 
 export async function savePlant(plant: PlantProps): Promise<void> {
     try {
+        const nextTime =  new Date(plant.dateTimeNotification);
+        const now = new Date();
+
+        const {times, repeat_every} = plant.frequency
+        if( repeat_every === 'week'){
+            const interval = Math.trunc(7/ times);
+            nextTime.setDate(now.getDate() + interval);
+       }else{
+           nextTime.setDate(nextTime.getDate() + 1)
+       }
+
+       const seconds = Math.abs(
+           Math.ceil(now.getTime() - nextTime.getTime() / 1000)
+       );
+
+
+        const notificationId =  await Notifications.scheduleLocalNotificationAsync({
+             content:{
+                 title: 'Heeey, 🌱',
+                 body: `Está na hora de cuidar da sua ${plant.name}`,
+                 sound: true,
+                 priority: Notifications.AndroidNotificationPriority.HIGH,
+                 data:{
+                     plant
+                 },
+             },
+             trigger:{
+                 seconds
+             }
+        })
         const data = await AsyncStorage.getItem('@plantmanager:plants');
         const oldPlants = data ? (JSON.parse(data) as StoragePlantProps) : {};
 
@@ -70,4 +102,15 @@ export async function loadPlant(): Promise<PlantProps[]> {
     } catch (error) {
         throw new Error(error);
     }
+}
+
+export async function removePlant(id: string): Promise<void>{
+    const data = await AsyncStorage.getItem('@plantmanager:plants');
+    const plants = data? (JSON.parse(data) as StoragePlantProps):{};
+    delete plants[id];
+
+    await AsyncStorage.setItem(
+        '@plantmanager:plants',
+        JSON.stringify(plants)
+    );
 }
