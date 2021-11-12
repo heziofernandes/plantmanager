@@ -5,7 +5,6 @@ import {
     Text,
     View
 } from 'react-native';
-
 import { useNavigation, useRoute } from '@react-navigation/core';
 
 import {Button} from '../components/Button';
@@ -39,7 +38,7 @@ export function Confirmation(){
     } = routes.params as Params;
 
     function handleMoveOn(){
-        navigation.navigate(nextScreen)
+        navigation.navigate(nextScreen);
     }
 
     return(
@@ -63,9 +62,6 @@ export function Confirmation(){
                     />
                  </View>
             </View>
-
-       
-
         </SafeAreaView>
     )
 }

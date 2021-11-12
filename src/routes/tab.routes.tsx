@@ -1,4 +1,5 @@
 import React from 'react';
+import {Platform} from 'react-native'
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 
 import colors from '../styles/colors';
@@ -11,13 +12,13 @@ const AppTab = createBottomTabNavigator();
 const AuthRoutes =() => {
     return(
         <AppTab.Navigator
-            tabBarOptions={{
-                activeTintColor:colors.green,
-                inactiveTinColor:colors.heading,
-                labelPosition:'beside-icon',
-                style:{
-                    paddingVerdical:20,
-                    height:88
+        screenOptions={{
+            tabBarActiveTintColor:colors.green,
+            tabBarInactiveTintColor:colors.heading,
+            tabBarLabelPosition:'beside-icon',
+            tabBarStyle:{
+                paddingVertical: Platform.OS === 'ios' ? 20 : 0,
+                height: 88
                 },
         }}>
             <AppTab.Screen

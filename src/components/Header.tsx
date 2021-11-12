@@ -5,8 +5,9 @@ import {
     Image,
     StyleSheet, 
 } from 'react-native';
-import{getStatusBarHeight} from 'react-native-iphone-x-helper';
 import AsyncStorage  from '@react-native-async-storage/async-storage'
+import{getStatusBarHeight} from 'react-native-iphone-x-helper';
+
 
 import useImg from '../assets/perfil.png';
 import colors from '../styles/colors';

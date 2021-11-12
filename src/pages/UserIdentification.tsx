@@ -19,7 +19,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 
-
 export function UserIdentification(){
     const [isFocused, setIsFocused] = useState(false);
     const [isFilled, setIsFilled] = useState(false);
@@ -38,9 +37,7 @@ export function UserIdentification(){
     function handleInputChange(value: string){
         setIsFilled(!!value);
         setName(value);
-    }
-
-    
+    }    
 
     async function handleSubmit(){
         if(!name)
@@ -55,11 +52,9 @@ export function UserIdentification(){
                 icon:'smile',
                 nextScreen:'PlantSelect',
             });
-
         }catch{
             Alert.alert('Não foi possível salvar o seu nome. 😢')
         }
-
     }
 
 return(
@@ -105,8 +100,7 @@ return(
             </TouchableWithoutFeedback>
         </KeyboardAvoidingView>
     </SafeAreaView>
-
-);
+    )
 }
 const styles = StyleSheet.create({
     container:{
@@ -118,7 +112,6 @@ const styles = StyleSheet.create({
     content:{
         flex:1,
         width:'100%',
-
     },
     form:{
         flex:1,

@@ -16,11 +16,11 @@ import wateringImg from '../assets/watering.png';
 import colors from '../styles/colors';
 import fonts  from '../styles/fonts';
 
-export function Welcome(){ 
+export function Welcome(){
     const navigation = useNavigation();
 
     function handleStart(){
-        navigation.navigate('UserIdentification')
+        navigation.navigate('UserIdentification');        
     }
 
     return(
@@ -71,7 +71,6 @@ const styles = StyleSheet.create({
     },
     title:{
         fontSize:28,
-        fontWeight:'bold',
         textAlign:'center',
         color: colors.heading,
         marginTop:38,
