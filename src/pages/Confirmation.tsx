@@ -5,7 +5,7 @@ import {
     Text,
     View
 } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/core';
+import { useNavigation, useRoute } from '@react-navigation/native';
 
 import {Button} from '../components/Button';
 

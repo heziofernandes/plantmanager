@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 
 import {Feather} from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 
 import wateringImg from '../assets/watering.png';
 import colors from '../styles/colors';

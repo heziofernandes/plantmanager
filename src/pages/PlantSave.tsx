@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useState } from 'react';
 import {
     Alert,
     StyleSheet,
@@ -11,14 +11,14 @@ import {
 } from 'react-native';
 import { SvgFromUri } from 'react-native-svg';
 import { getBottomSpace } from 'react-native-iphone-x-helper';
-import { useNavigation, useRoute } from '@react-navigation/core';
+import { useNavigation, useRoute } from '@react-navigation/native';
 import DateTimePicker, { Event } from '@react-native-community/datetimepicker';
 import { format, isBefore } from 'date-fns';
 import { PlantProps, savePlant } from '../libs/storage';
 
 import { Button } from '../components/Button';
 
-import waterdrop from '../assets/waterdrop.png';
+import waterDrop from '../assets/waterdrop.png';
 import colors from '../styles/colors';
 import fonts from '../styles/fonts';
 import { SharedElement } from 'react-navigation-shared-element';
@@ -29,7 +29,6 @@ import Animated, {
     withTiming, 
     interpolate, 
     Extrapolate,
-    withSequence 
 } from 'react-native-reanimated';
 
 interface Params {
@@ -37,167 +36,119 @@ interface Params {
 }
 
 export function PlantSave(){
+    const route = useRoute();
+    const navigation = useNavigation();
+    const  { plant } = route.params as Params;
+    
+
     const [selectedDateTime, setSelectedDateTime] = useState(new Date());
     const [showDatePicker, setShowDatePicker] = useState(Platform.OS == 'ios');
 
-    const route = useRoute();
-    const { plant } = route.params as Params;
-
-    const titlePosition = useSharedValue(-200);
-
-    const buttonPosition = useSharedValue(100)
-    const buttonStyle = useAnimatedStyle(() => {
-        return {
-            transform: [
-                { translateY: buttonPosition.value }
-            ],
-            opacity: interpolate(
-                buttonPosition.value,
-                [100, 0], // numero minimo e maxi da animacao
-                [0, 1], // opacidade respectiva na posicao
-            Extrapolate.CLAMP // limita a opacidade de 0 ate 1
-            )
-        }
-    });
-
-    const titleStyle = useAnimatedStyle(() => {
-        return {
-            transform: [
-                { translateX: titlePosition.value },
-            ],
-            opacity: interpolate(
-                titlePosition.value,
-                [-200, 0],
-                [0, 1]
-            )
-        }
-    })
-
-    const navigation = useNavigation();
-
-    function handleChangeTime(event: Event, dateTime: Date | undefined){
-        if(Platform.OS === 'android'){
+    const handleChangeTime = function(event: Event, dateTime: Date | undefined){
+        if(Platform.OS == 'android'){
             setShowDatePicker(oldState => !oldState);
         }
 
         if(dateTime && isBefore(dateTime, new Date())){
             setSelectedDateTime(new Date());
-            return Alert.alert('Escolha uma hora no futuro! ⏰');
+            return Alert.alert('Escolha uma hora no futuro!');
         }
 
-        if(dateTime)
+        if(dateTime){
             setSelectedDateTime(dateTime);
+        }
     }
 
-    function handleOpenDatetimePickerForAndroid(){
-        setShowDatePicker(oldState => !oldState);
+    const handleOpenDateTimePickerForAndroid = function(){
+        setShowDatePicker(oldState => !oldState)
     }
 
-    async function handleSave() {
-        try {
+    const handleSave = async function(){
+        try{
             await savePlant({
                 ...plant,
                 dateTimeNotification: selectedDateTime
-            });
+            })
 
             navigation.navigate('Confirmation', {
                 title: 'Tudo certo',
                 subtitle: 'Fique tranquilo que sempre vamos lembrar você de cuidar da sua plantinha com muito cuidado.',
-                buttonTitle: 'Muito Obrigado :D',
+                buttonTitle: 'Muito obrigado :D',
                 icon: 'hug',
-                nextScreen: 'MyPlants',
-            }); 
+                nextScreen: 'MyPlants'
+            });
 
-        } catch {
-            Alert.alert('Não foi possível salvar. 😢');
+        }catch(e){
+            Alert.alert('Não foi possível salvar');
         }
     }
 
-    useEffect(() => {       
-        buttonPosition.value =
-            withTiming(0, { 
-                duration: 700,
-                //para gerar cubic-bezier https://cubic-bezier.com/#.15,.75,.93,.54
-                easing: Easing.bounce
-            });
-        
-        titlePosition.value = 
-            withTiming(0, { 
-                duration: 700,
-                //para gerar cubic-bezier https://cubic-bezier.com/#.15,.75,.93,.54
-                easing: Easing.bounce
-            });
-    },[]);
-
-    return ( 
+    return (
         <ScrollView
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={styles.scrollListContainer}
         >
             <View style={styles.container}>
+
                 <View style={styles.plantInfo}>
-                    <SharedElement id={`item.${plant.id}.image`}>
-                        <SvgFromUri
-                            uri={plant.photo}
-                            height={150}
-                            width={150}
-                        />
-                    </SharedElement>
+                    <SvgFromUri 
+                        uri={plant.photo}
+                        height={150}
+                        width={150}
+                    />
 
-                    <Animated.Text style={[styles.plantName, titleStyle]}>
-                    {plant.name}
-                    </Animated.Text>
-
+                    <Text style={styles.plantName}>
+                        {plant.name}
+                    </Text>
                     <Text style={styles.plantAbout}>
-                        {plant.about} 
+                        {plant.about}
                     </Text>
                 </View>
 
                 <View style={styles.controller}>
-                    <View style={styles.tipContainer}>
-                        <Image
-                            source={waterdrop}
-                            style={styles.tipImage}
-                        />
-                        <Text style={styles.tipText}>
-                            {plant.water_tips}
-                        </Text>
-                    </View>
+                <View style={styles.tipContainer}>
+                    <Image 
+                        source={waterDrop} 
+                    />
 
-                    <Text style={styles.alertLabel}>
-                        Escolha o melhor horário para ser lembrado:
+                    <Text style={styles.tipText}>
+                        {plant.water_tips}
                     </Text>
 
-                    {showDatePicker && (
-                        <DateTimePicker
-                        value={selectedDateTime}
-                        mode="time"
-                        display="spinner"
-                        onChange={handleChangeTime}
+
+                </View>
+                    <Text style={styles.alertLabel}>
+                        Escolha o melhor horário para ser lembrado
+                    </Text>
+
+
+                    { showDatePicker && (
+                        <DateTimePicker 
+                            value={selectedDateTime}
+                            mode="time"
+                            display="spinner"
+                            onChange={handleChangeTime}
                         />
                     )}
 
                     {
-                        Platform.OS === 'android' && (
-                            <TouchableOpacity 
+                        Platform.OS == 'android' && (
+                            <TouchableOpacity
+                                onPress={handleOpenDateTimePickerForAndroid}
                                 style={styles.dateTimePickerButton}
-                                onPress={handleOpenDatetimePickerForAndroid}
                             >
                                 <Text style={styles.dateTimePickerText}>
-                                {`Mudar ${format(selectedDateTime, 'HH:mm')}`}
+                                   {`Mudar horário: ${format(selectedDateTime, 'HH:mm')}`}
                                 </Text>
                             </TouchableOpacity>
                         )
                     }
 
+                    <Button 
+                        title="Cadastrar Planta" 
+                        onPress={handleSave} 
+                    />
+            </View>
         
-                    <Animated.View style={buttonStyle}>
-                        <Button 
-                            title="Cadastrar planta"
-                            onPress={handleSave}
-                        />
-                    </Animated.View>
-                </View>
             </View>
         </ScrollView>
     )
@@ -209,14 +160,9 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         backgroundColor: colors.shape,
     },
-    scrollListContainer: {
-        flexGrow: 1,
-        justifyContent: 'space-between',
-        backgroundColor: colors.shape
-      },
     plantInfo: {
         flex: 1,
-        paddingHorizontal: 30,
+        paddingHorizontal:30,
         paddingVertical: 50,
         alignItems: 'center',
         justifyContent: 'center',
@@ -239,7 +185,7 @@ const styles = StyleSheet.create({
         fontFamily: fonts.text,
         color: colors.heading,
         fontSize: 17,
-        marginTop: 10
+        marginTop: 10,
     },
     tipContainer: {
         flexDirection: 'row',
@@ -250,10 +196,6 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         position: 'relative',
         bottom: 60
-    },
-    tipImage: {
-        width: 56,
-        height: 56,
     },
     tipText: {
         flex: 1,
@@ -267,13 +209,15 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontFamily: fonts.complement,
         color: colors.heading,
-        fontSize: 12,
-        marginBottom: 5
+        fontSize: 13,
+        lineHeight: 23,
+        marginBottom: 5,
     },
+
     dateTimePickerButton: {
         width: '100%',
         alignItems: 'center',
-        paddingVertical: 40,
+        paddingVertical: 40
     },
     dateTimePickerText: {
         color: colors.heading,

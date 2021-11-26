@@ -12,7 +12,7 @@ import {
     Alert
 } from 'react-native';
 
-import { useNavigation } from '@react-navigation/core';
+import { useNavigation } from '@react-navigation/native';
 import {Button} from '../components/Button';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
